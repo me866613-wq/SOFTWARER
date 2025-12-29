@@ -1,0 +1,1044 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تطبيق المسلم | الذكر والأذكار</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&display=swap');
+        
+        :root {
+            --primary: #4361ee;
+            --secondary: #3f37c9;
+            --accent: #4895ef;
+            --light: #f8f9fa;
+            --dark: #212529;
+            --bg-light: #f5f7ff;
+            --text-light: #212529;
+            --card-bg-light: #ffffff;
+            --footer-bg-light: #212529;
+        }
+
+        .dark-mode {
+            --bg-light: #1a1a1a;
+            --text-light: #f8f9fa;
+            --card-bg-light: #2c2c2c;
+            --footer-bg-light: #000000;
+        }
+        
+        body {
+            font-family: 'Tajawal', sans-serif;
+            background-color: var(--bg-light);
+            min-height: 100vh;
+            color: var(--text-light);
+            transition: background-color 0.3s, color 0.3s;
+        }
+        
+        .bg-gradient-primary {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+        }
+        
+        .bg-gradient-accent {
+            background: linear-gradient(135deg, var(--accent) 0%, #4cc9f0 100%);
+        }
+        
+        .btn-hover-effect {
+            transition: all 0.3s ease;
+            transform: translateY(0);
+        }
+        
+        .btn-hover-effect:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+        
+        .tasbeeh-circle {
+            width: 200px;
+            height: 200px;
+            transition: all 0.3s ease;
+        }
+        
+        .tasbeeh-circle:hover {
+            transform: scale(1.05);
+        }
+        
+        .counter-display {
+            font-size: 4rem;
+            text-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .page-transition {
+            animation: fadeIn 0.5s ease-in-out;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .dhikr-card, .hadith-card, .pillar-card {
+            background-color: var(--card-bg-light);
+            transition: background-color 0.3s, box-shadow 0.3s;
+        }
+
+        .dhikr-card {
+            border-left: 4px solid var(--primary);
+        }
+        
+        .dhikr-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+        
+        .pillar-card {
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+        
+        .pillar-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+        }
+        
+        .hadith-card {
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+        }
+        
+        .hadith-card:hover {
+            box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .tab-active {
+            border-bottom: 3px solid var(--primary);
+            font-weight: bold;
+            color: var(--primary);
+        }
+
+        /* Qibla Page Specific CSS */
+        #qibla-arrow {
+            transition: transform 0.3s ease-in-out;
+        }
+        #qibla-compass .qibla-needle {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 8px;
+            height: 50%;
+            transform-origin: bottom center;
+            background-color: #3f37c9;
+            transform: translateX(-50%) rotate(0deg);
+            border-radius: 4px 4px 0 0;
+            z-index: 10;
+        }
+    </style>
+</head>
+<body class="text-gray-800">
+    <div id="app" class="min-h-screen flex flex-col">
+        <header class="bg-gradient-primary text-white shadow-lg">
+            <div class="container mx-auto px-4 py-4 flex justify-between items-center">
+                <h1 id="app-title" class="text-2xl font-bold" data-lang-ar="هداء المسلم" data-lang-en="Muslims Guidance">هداء المسلم</h1>
+                <div class="flex items-center space-x-2">
+                    <button onclick="toggleLanguage()" class="flex items-center text-white/90 hover:text-white transition">
+                        <i class="fas fa-globe text-xl"></i>
+                    </button>
+                    <button onclick="toggleDarkMode()" class="text-white/90 hover:text-white transition">
+                        <i id="mode-icon" class="fas fa-moon text-xl"></i>
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <main class="flex-grow container mx-auto px-4 py-8">
+            <div id="home-page" class="page-transition">
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <div class="bg-white rounded-xl shadow-lg overflow-hidden btn-hover-effect" onclick="showPage('tasbeeh-page')">
+                        <div class="bg-gradient-primary p-6 text-center">
+                            <div class="flex justify-center mb-4">
+                                <i class="fas fa-praying-hands text-5xl text-white"></i>
+                            </div>
+                            <h3 class="text-xl font-bold text-white mb-2" data-lang-ar="السبحة الإلكترونية" data-lang-en="Digital Tasbeeh">السبحة الإلكترونية</h3>
+                            <p class="text-white/90" data-lang-ar="عد ذكر الله بسهولة ويسر" data-lang-en="Count remembrance of Allah with ease">عد ذكر الله بسهولة ويسر</p>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-white rounded-xl shadow-lg overflow-hidden btn-hover-effect" onclick="showPage('prayer-times-page')">
+                        <div class="bg-gradient-accent p-6 text-center">
+                            <div class="flex justify-center mb-4">
+                                <i class="fas fa-clock text-5xl text-white"></i>
+                            </div>
+                            <h3 class="text-xl font-bold text-white mb-2" data-lang-ar="مواقيت الصلاة" data-lang-en="Prayer Times">مواقيت الصلاة</h3>
+                            <p class="text-white/90" data-lang-ar="أوقات الصلاة حسب موقعك" data-lang-en="Prayer times based on your location">أوقات الصلاة حسب موقعك</p>
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-xl shadow-lg overflow-hidden btn-hover-effect" onclick="showPage('morning-evening-page')">
+                        <div class="bg-gradient-to-r from-teal-500 to-cyan-500 p-6 text-center">
+                            <div class="flex justify-center mb-4">
+                                <i class="fas fa-sun text-5xl text-white"></i>
+                            </div>
+                            <h3 class="text-xl font-bold text-white mb-2" data-lang-ar="أذكار الصباح والمساء" data-lang-en="Morning & Evening Adhkar">أذكار الصباح والمساء</h3>
+                            <p class="text-white/90" data-lang-ar="حصن المسلم اليومي" data-lang-en="The daily fortress of the Muslim">حصن المسلم اليومي</p>
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-xl shadow-lg overflow-hidden btn-hover-effect" onclick="showPage('qibla-page')">
+                        <div class="bg-gradient-to-r from-orange-500 to-yellow-500 p-6 text-center">
+                            <div class="flex justify-center mb-4">
+                                <i class="fas fa-kaaba text-5xl text-white"></i>
+                            </div>
+                            <h3 class="text-xl font-bold text-white mb-2" data-lang-ar="القبلة" data-lang-en="Qibla">القبلة</h3>
+                            <p class="text-white/90" data-lang-ar="بوصلة لتحديد اتجاه القبلة" data-lang-en="A compass to determine the direction of the Qibla">بوصلة لتحديد اتجاه القبلة</p>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-white rounded-xl shadow-lg overflow-hidden btn-hover-effect" onclick="showPage('adhkar-page')">
+                        <div class="bg-gradient-to-r from-purple-500 to-pink-500 p-6 text-center">
+                            <div class="flex justify-center mb-4">
+                                <i class="fas fa-book-open text-5xl text-white"></i>
+                            </div>
+                            <h3 class="text-xl font-bold text-white mb-2" data-lang-ar="أذكار متنوعة" data-lang-en="Various Adhkar">أذكار متنوعة</h3>
+                            <p class="text-white/90" data-lang-ar="أذكار لكل مناسبة" data-lang-en="Adhkar for every occasion">أذكار لكل مناسبة</p>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-white rounded-xl shadow-lg overflow-hidden btn-hover-effect" onclick="showPage('hadith-page')">
+                        <div class="bg-gradient-to-r from-green-500 to-teal-500 p-6 text-center">
+                            <div class="flex justify-center mb-4">
+                                <i class="fas fa-quote-right text-5xl text-white"></i>
+                            </div>
+                            <h3 class="text-xl font-bold text-white mb-2" data-lang-ar="أحاديث متنوعة" data-lang-en="Various Hadith">أحاديث متنوعة</h3>
+                            <p class="text-white/90" data-lang-ar="من أحاديث النبي ﷺ" data-lang-en="From the sayings of the Prophet ﷺ">من أحاديث النبي ﷺ</p>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-white rounded-xl shadow-lg overflow-hidden btn-hover-effect" onclick="showPage('islam-pillars-page')">
+                        <div class="bg-gradient-to-r from-yellow-500 to-orange-500 p-6 text-center">
+                            <div class="flex justify-center mb-4">
+                                <i class="fas fa-mosque text-5xl text-white"></i>
+                            </div>
+                            <h3 class="text-xl font-bold text-white mb-2" data-lang-ar="أركان الإسلام" data-lang-en="Pillars of Islam">أركان الإسلام</h3>
+                            <p class="text-white/90" data-lang-ar="أساسيات ديننا الحنيف" data-lang-en="The fundamentals of our true religion">أساسيات ديننا الحنيف</p>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-white rounded-xl shadow-lg overflow-hidden btn-hover-effect" onclick="showPage('iman-pillars-page')">
+                        <div class="bg-gradient-to-r from-red-500 to-pink-500 p-6 text-center">
+                            <div class="flex justify-center mb-4">
+                                <i class="fas fa-star-and-crescent text-5xl text-white"></i>
+                            </div>
+                            <h3 class="text-xl font-bold text-white mb-2" data-lang-ar="أركان الإيمان" data-lang-en="Pillars of Iman">أركان الإيمان</h3>
+                            <p class="text-white/90" data-lang-ar="أسس العقيدة الإسلامية" data-lang-en="The foundations of Islamic faith">أسس العقيدة الإسلامية</p>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-white rounded-xl shadow-lg overflow-hidden btn-hover-effect" onclick="showPage('zakat-page')">
+                        <div class="bg-gradient-to-r from-teal-500 to-green-500 p-6 text-center">
+                            <div class="flex justify-center mb-4">
+                                <i class="fas fa-hand-holding-usd text-5xl text-white"></i>
+                            </div>
+                            <h3 class="text-xl font-bold text-white mb-2" data-lang-ar="احسب زكاتك" data-lang-en="Calculate Zakat">احسب زكاتك</h3>
+                            <p class="text-white/90" data-lang-ar="زكاتك الشهرية" data-lang-en="Your monthly zakat">زكاتك الشهرية</p>
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-xl shadow-lg overflow-hidden btn-hover-effect" onclick="showPage('about-us-page')">
+                        <div class="bg-gradient-to-r from-gray-500 to-gray-700 p-6 text-center">
+                            <div class="flex justify-center mb-4">
+                                <i class="fas fa-info-circle text-5xl text-white"></i>
+                            </div>
+                            <h3 class="text-xl font-bold text-white mb-2" data-lang-ar="من نحن" data-lang-en="About Us">من نحن</h3>
+                            <p class="text-white/90" data-lang-ar="قصة هذا التطبيق" data-lang-en="The story of this app">قصة هذا التطبيق</p>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-white rounded-xl shadow-lg overflow-hidden btn-hover-effect" onclick="showPage('privacy-page')">
+                        <div class="bg-gradient-to-r from-gray-600 to-gray-800 p-6 text-center">
+                            <div class="flex justify-center mb-4">
+                                <i class="fas fa-shield-alt text-5xl text-white"></i>
+                            </div>
+                            <h3 class="text-xl font-bold text-white mb-2" data-lang-ar="سياسة الخصوصية" data-lang-en="Privacy Policy">سياسة الخصوصية</h3>
+                            <p class="text-white/90" data-lang-ar="حماية بياناتك" data-lang-en="Protecting your data">حماية بياناتك</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div id="tasbeeh-page" class="page-transition hidden">
+                <div class="flex justify-between items-center mb-8">
+                    <button onclick="showPage('home-page')" class="bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-2 px-4 rounded-lg flex items-center">
+                        <i class="fas fa-arrow-right ml-2"></i> <span data-lang-ar="العودة" data-lang-en="Back">العودة</span>
+                    </button>
+                    <h2 class="text-2xl font-bold text-gray-700" data-lang-ar="السبحة الإلكترونية" data-lang-en="Digital Tasbeeh">السبحة الإلكترونية</h2>
+                    <div class="w-24"></div>
+                </div>
+                
+                <div class="flex flex-col items-center justify-center">
+                    <div class="mb-8 text-center">
+                        <div class="counter-display font-bold text-blue-600" id="counter">0</div>
+                        <p class="text-gray-600 mt-2" data-lang-ar="عدد التسبيحات" data-lang-en="Number of Tasbeeh">عدد التسبيحات</p>
+                    </div>
+                    
+                    <div class="tasbeeh-circle bg-gradient-primary rounded-full flex items-center justify-center shadow-xl mb-8 cursor-pointer" onclick="incrementCounter()">
+                        <span class="text-white text-4xl font-bold" id="current-dhikr" data-lang-ar="سبحان الله" data-lang-en="Subhan Allah">سبحان الله</span>
+                    </div>
+                    
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+                        <button onclick="changeDhikr('سبحان الله', 'Subhan Allah')" class="bg-blue-100 hover:bg-blue-200 text-blue-800 py-2 px-4 rounded-lg"><span data-lang-ar="سبحان الله" data-lang-en="Subhan Allah">سبحان الله</span></button>
+                        <button onclick="changeDhikr('الحمد لله', 'Alhamdulillah')" class="bg-green-100 hover:bg-green-200 text-green-800 py-2 px-4 rounded-lg"><span data-lang-ar="الحمد لله" data-lang-en="Alhamdulillah">الحمد لله</span></button>
+                        <button onclick="changeDhikr('الله أكبر', 'Allahu Akbar')" class="bg-red-100 hover:bg-red-200 text-red-800 py-2 px-4 rounded-lg"><span data-lang-ar="الله أكبر" data-lang-en="Allahu Akbar">الله أكبر</span></button>
+                        <button onclick="changeDhikr('لا إله إلا الله', 'La ilaha illallah')" class="bg-purple-100 hover:bg-purple-200 text-purple-800 py-2 px-4 rounded-lg"><span data-lang-ar="لا إله إلا الله" data-lang-en="La ilaha illallah">لا إله إلا الله</span></button>
+                    </div>
+                    
+                    <button onclick="resetCounter()" class="bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-2 px-6 rounded-lg">
+                        <i class="fas fa-redo mr-2"></i> <span data-lang-ar="إعادة الضبط" data-lang-en="Reset">إعادة الضبط</span>
+                    </button>
+                </div>
+            </div>
+            
+            <div id="morning-evening-page" class="page-transition hidden">
+                <div class="flex justify-between items-center mb-8">
+                    <button onclick="showPage('home-page')" class="bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-2 px-4 rounded-lg flex items-center">
+                        <i class="fas fa-arrow-right ml-2"></i> <span data-lang-ar="العودة" data-lang-en="Back">العودة</span>
+                    </button>
+                    <h2 class="text-2xl font-bold text-gray-700" data-lang-ar="أذكار الصباح والمساء" data-lang-en="Morning & Evening Adhkar">أذكار الصباح والمساء</h2>
+                    <div class="flex space-x-2">
+                        <button id="morning-tab" class="px-4 py-2 tab-active" onclick="switchAdhkarTab('morning')"><span data-lang-ar="الصباح" data-lang-en="Morning">الصباح</span></button>
+                        <button id="evening-tab" class="px-4 py-2" onclick="switchAdhkarTab('evening')"><span data-lang-ar="المساء" data-lang-en="Evening">المساء</span></button>
+                    </div>
+                </div>
+                
+                <div id="morning-adhkar" class="space-y-6">
+                    <div class="dhikr-card bg-white p-6 rounded-lg shadow-md">
+                        <div class="flex items-start">
+                            <div class="bg-blue-100 text-blue-800 rounded-full w-10 h-10 flex items-center justify-center mr-4">
+                                <span>1</span>
+                            </div>
+                            <div>
+                                <h3 class="text-xl font-bold text-blue-800 mb-2" data-lang-ar="أعوذ بالله من الشيطان الرجيم" data-lang-en="I seek refuge in Allah from Satan">أعوذ بالله من الشيطان الرجيم</h3>
+                                <p class="text-gray-700 leading-relaxed" data-lang-ar="أَعُوذُ بِاللَّهِ مِنَ الشَّيْطَانِ الرَّجِيمِ" data-lang-en="I seek refuge in Allah from Satan the outcast.">أَعُوذُ بِاللَّهِ مِنَ الشَّيْطَانِ الرَّجِيمِ</p>
+                                <p class="text-gray-500 mt-2" data-lang-ar="مرة واحدة" data-lang-en="Once">مرة واحدة</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="dhikr-card bg-white p-6 rounded-lg shadow-md">
+                        <div class="flex items-start">
+                            <div class="bg-blue-100 text-blue-800 rounded-full w-10 h-10 flex items-center justify-center mr-4">
+                                <span>2</span>
+                            </div>
+                            <div>
+                                <h3 class="text-xl font-bold text-blue-800 mb-2" data-lang-ar="آية الكرسي" data-lang-en="Ayat Al-Kursi">آية الكرسي</h3>
+                                <p class="text-gray-700 leading-relaxed" data-lang-ar="اللَّهُ لاَ إِلَهَ إِلاَّ هُوَ الْحَيُّ الْقَيُّومُ، لاَ تَأْخُذُهُ سِنَةٌ وَلاَ نَوْمٌ، لَّهُ مَا فِي السَّمَاوَاتِ وَمَا فِي الأَرْضِ، مَن ذَا الَّذِي يَشْفَعُ عِنْدَهُ إِلاَّ بِإِذْنِهِ، يَعْلَمُ مَا بَيْنَ أَيْدِيهِمْ وَمَا خَلْفَهُمْ، وَلاَ يُحِيطُونَ بِشَيْءٍ مِّنْ عِلْمِهِ إِلاَّ بِمَا شَاء، وَسِعَ كُرْسِيُّهُ السَّمَاوَاتِ وَالأَرْضَ، وَلاَ يَئُودُهُ حِفْظُهُمَا، وَهُوَ الْعَلِيُّ الْعَظِيمُ" data-lang-en="Allah! There is no god but He, the Living, the Self-subsisting, Eternal. No slumber can seize Him nor sleep. His are all things in the heavens and on earth. Who is there can intercede in His presence except as He permitteth? He knoweth what is before or after or behind or ahead of them. Nor shall they compass aught of His knowledge except as He willeth. His throne doth extend over the heavens and on earth, and He feels no fatigue in guarding and preserving them for He is the Most High, the Supreme (in glory).">اللَّهُ لاَ إِلَهَ إِلاَّ هُوَ الْحَيُّ الْقَيُّومُ، لاَ تَأْخُذُهُ سِنَةٌ وَلاَ نَوْمٌ، لَّهُ مَا فِي السَّمَاوَاتِ وَمَا فِي الأَرْضِ، مَن ذَا الَّذِي يَشْفَعُ عِنْدَهُ إِلاَّ بِإِذْنِهِ، يَعْلَمُ مَا بَيْنَ أَيْدِيهِمْ وَمَا خَلْفَهُمْ، وَلاَ يُحِيطُونَ بِشَيْءٍ مِّنْ عِلْمِهِ إِلاَّ بِمَا شَاء، وَسِعَ كُرْسِيُّهُ السَّمَاوَاتِ وَالأَرْضَ، وَلاَ يَئُودُهُ حِفْظُهُمَا، وَهُوَ الْعَلِيُّ الْعَظِيمُ</p>
+                                <p class="text-gray-500 mt-2" data-lang-ar="مرة واحدة" data-lang-en="Once">مرة واحدة</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="dhikr-card bg-white p-6 rounded-lg shadow-md">
+                        <div class="flex items-start">
+                            <div class="bg-blue-100 text-blue-800 rounded-full w-10 h-10 flex items-center justify-center mr-4">
+                                <span>3</span>
+                            </div>
+                            <div>
+                                <h3 class="text-xl font-bold text-blue-800 mb-2" data-lang-ar="سورة الإخلاص والمعوذتين" data-lang-en="Surah Al-Ikhlas & Al-Mu'awwidhatayn">سورة الإخلاص والمعوذتين</h3>
+                                <p class="text-gray-700 leading-relaxed" data-lang-ar="قُلْ هُوَ اللَّهُ أَحَدٌ (ثلاث مرات) - قُلْ أَعُوذُ بِرَبِّ الْفَلَقِ (ثلاث مرات) - قُلْ أَعُوذُ بِرَبِّ النَّاسِ (ثلاث مرات)" data-lang-en="Say: He is Allah, the One (3 times) - Say: I seek refuge in the Lord of the daybreak (3 times) - Say: I seek refuge in the Lord of mankind (3 times)">قُلْ هُوَ اللَّهُ أَحَدٌ (ثلاث مرات) - قُلْ أَعُوذُ بِرَبِّ الْفَلَقِ (ثلاث مرات) - قُلْ أَعُوذُ بِرَبِّ النَّاسِ (ثلاث مرات)</p>
+                                <p class="text-gray-500 mt-2" data-lang-ar="ثلاث مرات" data-lang-en="Three times">ثلاث مرات</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div id="evening-adhkar" class="space-y-6 hidden">
+                    <div class="dhikr-card bg-white p-6 rounded-lg shadow-md">
+                        <div class="flex items-start">
+                            <div class="bg-purple-100 text-purple-800 rounded-full w-10 h-10 flex items-center justify-center mr-4">
+                                <span>1</span>
+                            </div>
+                            <div>
+                                <h3 class="text-xl font-bold text-purple-800 mb-2" data-lang-ar="أعوذ بالله من الشيطان الرجيم" data-lang-en="I seek refuge in Allah from Satan">أعوذ بالله من الشيطان الرجيم</h3>
+                                <p class="text-gray-700 leading-relaxed" data-lang-ar="أَعُوذُ بِاللَّهِ مِنَ الشَّيْطَانِ الرَّجِيمِ" data-lang-en="I seek refuge in Allah from Satan the outcast.">أَعُوذُ بِاللَّهِ مِنَ الشَّيْطَانِ الرَّجِيمِ</p>
+                                <p class="text-gray-500 mt-2" data-lang-ar="مرة واحدة" data-lang-en="Once">مرة واحدة</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="dhikr-card bg-white p-6 rounded-lg shadow-md">
+                        <div class="flex items-start">
+                            <div class="bg-purple-100 text-purple-800 rounded-full w-10 h-10 flex items-center justify-center mr-4">
+                                <span>2</span>
+                            </div>
+                            <div>
+                                <h3 class="text-xl font-bold text-purple-800 mb-2" data-lang-ar="آية الكرسي" data-lang-en="Ayat Al-Kursi">آية الكرسي</h3>
+                                <p class="text-gray-700 leading-relaxed" data-lang-ar="اللَّهُ لاَ إِلَهَ إِلاَّ هُوَ الْحَيُّ الْقَيُّومُ، لاَ تَأْخُذُهُ سِنَةٌ وَلاَ نَوْمٌ، لَّهُ مَا فِي السَّمَاوَاتِ وَمَا فِي الأَرْضِ، مَن ذَا الَّذِي يَشْفَعُ عِنْدَهُ إِلاَّ بِإِذْنِهِ، يَعْلَمُ مَا بَيْنَ أَيْدِيهِمْ وَمَا خَلْفَهُمْ، وَلاَ يُحِيطُونَ بِشَيْءٍ مِّنْ عِلْمِهِ إِلاَّ بِمَا شَاء، وَسِعَ كُرْسِيُّهُ السَّمَاوَاتِ وَالأَرْضَ، وَلاَ يَئُودُهُ حِفْظُهُمَا، وَهُوَ الْعَلِيُّ الْعَظِيمُ" data-lang-en="Allah! There is no god but He, the Living, the Self-subsisting, Eternal. No slumber can seize Him nor sleep. His are all things in the heavens and on earth. Who is there can intercede in His presence except as He permitteth? He knoweth what is before or after or behind or ahead of them. Nor shall they compass aught of His knowledge except as He willeth. His throne doth extend over the heavens and on earth, and He feels no fatigue in guarding and preserving them for He is the Most High, the Supreme (in glory).">اللَّهُ لاَ إِلَهَ إِلاَّ هُوَ الْحَيُّ الْقَيُّومُ، لاَ تَأْخُذُهُ سِنَةٌ وَلاَ نَوْمٌ، لَّهُ مَا فِي السَّمَاوَاتِ وَمَا فِي الأَرْضِ، مَن ذَا الَّذِي يَشْفَعُ عِنْدَهُ إِلاَّ بِإِذْنِهِ، يَعْلَمُ مَا بَيْنَ أَيْدِيهِمْ وَمَا خَلْفَهُمْ، وَلاَ يُحِيطُونَ بِشَيْءٍ مِّنْ عِلْمِهِ إِلاَّ بِمَا شَاء، وَسِعَ كُرْسِيُّهُ السَّمَاوَاتِ وَالأَرْضَ، وَلاَ يَئُودُهُ حِفْظُهُمَا، وَهُوَ الْعَلِيُّ الْعَظِيمُ</p>
+                                <p class="text-gray-500 mt-2" data-lang-ar="مرة واحدة" data-lang-en="Once">مرة واحدة</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="dhikr-card bg-white p-6 rounded-lg shadow-md">
+                        <div class="flex items-start">
+                            <div class="bg-purple-100 text-purple-800 rounded-full w-10 h-10 flex items-center justify-center mr-4">
+                                <span>3</span>
+                            </div>
+                            <div>
+                                <h3 class="text-xl font-bold text-purple-800 mb-2" data-lang-ar="سورة الإخلاص والمعوذتين" data-lang-en="Surah Al-Ikhlas & Al-Mu'awwidhatayn">سورة الإخلاص والمعوذتين</h3>
+                                <p class="text-gray-700 leading-relaxed" data-lang-ar="قُلْ هُوَ اللَّهُ أَحَدٌ (ثلاث مرات) - قُلْ أَعُوذُ بِرَبِّ الْفَلَقِ (ثلاث مرات) - قُلْ أَعُوذُ بِرَبِّ النَّاسِ (ثلاث مرات)" data-lang-en="Say: He is Allah, the One (3 times) - Say: I seek refuge in the Lord of the daybreak (3 times) - Say: I seek refuge in the Lord of mankind (3 times)">قُلْ هُوَ اللَّهُ أَحَدٌ (ثلاث مرات) - قُلْ أَعُوذُ بِرَبِّ الْفَلَقِ (ثلاث مرات) - قُلْ أَعُوذُ بِرَبِّ النَّاسِ (ثلاث مرات)</p>
+                                <p class="text-gray-500 mt-2" data-lang-ar="ثلاث مرات" data-lang-en="Three times">ثلاث مرات</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="qibla-page" class="page-transition hidden">
+                <div class="flex justify-between items-center mb-8">
+                    <button onclick="showPage('home-page')" class="bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-2 px-4 rounded-lg flex items-center">
+                        <i class="fas fa-arrow-right ml-2"></i> <span data-lang-ar="العودة" data-lang-en="Back">العودة</span>
+                    </button>
+                    <h2 class="text-2xl font-bold text-gray-700" data-lang-ar="القبلة" data-lang-en="Qibla">القبلة</h2>
+                    <div class="w-24"></div>
+                </div>
+
+                <div class="bg-white p-6 rounded-lg shadow-md flex flex-col items-center">
+                    <p class="text-gray-700 font-bold text-center mb-4" id="qibla-status-message" data-lang-ar="جاري الحصول على موقعك..." data-lang-en="Getting your location...">جاري الحصول على موقعك...</p>
+                    <div id="qibla-container" class="w-64 h-64 relative">
+                        <div id="qibla-compass" class="w-full h-full rounded-full border-4 border-gray-400 flex items-center justify-center bg-gray-100 relative">
+                            <i id="qibla-arrow" class="fas fa-location-arrow text-4xl text-red-500 transform transition-transform duration-500 z-20" style="transform: rotate(0deg);"></i>
+                            <div class="w-1/2 h-full absolute flex items-center justify-center transform" id="qibla-needle-container">
+                                <div class="w-1 h-1/2 bg-blue-600 absolute top-0 transform -translate-y-full"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="text-gray-500 text-center mt-4" id="qibla-info-message" data-lang-ar="قم بتحريك هاتفك حتى يشير المؤشر الأزرق إلى المؤشر الأحمر" data-lang-en="Move your phone until the blue needle points to the red arrow">قم بتحريك هاتفك حتى يشير المؤشر الأزرق إلى المؤشر الأحمر</p>
+                </div>
+            </div>
+            
+            <div id="adhkar-page" class="page-transition hidden">
+                <div class="flex justify-between items-center mb-8">
+                    <button onclick="showPage('home-page')" class="bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-2 px-4 rounded-lg flex items-center">
+                        <i class="fas fa-arrow-right ml-2"></i> <span data-lang-ar="العودة" data-lang-en="Back">العودة</span>
+                    </button>
+                    <h2 class="text-2xl font-bold text-gray-700" data-lang-ar="أذكار متنوعة" data-lang-en="Various Adhkar">أذكار متنوعة</h2>
+                    <div class="w-24"></div>
+                </div>
+                
+                <div class="space-y-6">
+                    <div class="dhikr-card bg-white p-6 rounded-lg shadow-md">
+                        <div class="flex items-start">
+                            <div class="bg-green-100 text-green-800 rounded-full w-10 h-10 flex items-center justify-center mr-4">
+                                <i class="fas fa-bed"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-xl font-bold text-green-800 mb-2" data-lang-ar="أذكار النوم" data-lang-en="Sleeping Adhkar">أذكار النوم</h3>
+                                <p class="text-gray-700 leading-relaxed" data-lang-ar="بِاسْمِكَ رَبِّـي وَضَعْـتُ جَنْـبي ، وَبِكَ أَرْفَعُـه، فَإِنْ أَمْسَـكْتَ نَفْسـي فارْحَـمْها ، وَإِنْ أَرْسَلْتَـها فَاحْفَـظْـها بِمـا تَحْفَـظُ بِه عِبـادَكَ الصّـالِحـين" data-lang-en="With Your Name, my Lord, I lay my side, and with You I raise it. If You take my soul, then have mercy upon it, and if You release it, then protect it with that which You protect Your righteous servants.">بِاسْمِكَ رَبِّـي وَضَعْـتُ جَنْـبي ، وَبِكَ أَرْفَعُـه، فَإِنْ أَمْسَـكْتَ نَفْسـي فارْحَـمْها ، وَإِنْ أَرْسَلْتَـها فَاحْفَـظْـها بِمـا تَحْفَـظُ بِه عِبـادَكَ الصّـالِحـين</p>
+                                <p class="text-gray-500 mt-2" data-lang-ar="مرة واحدة عند النوم" data-lang-en="Once before sleeping">مرة واحدة عند النوم</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="dhikr-card bg-white p-6 rounded-lg shadow-md">
+                        <div class="flex items-start">
+                            <div class="bg-yellow-100 text-yellow-800 rounded-full w-10 h-10 flex items-center justify-center mr-4">
+                                <i class="fas fa-utensils"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-xl font-bold text-yellow-800 mb-2" data-lang-ar="أذكار الطعام" data-lang-en="Eating Adhkar">أذكار الطعام</h3>
+                                <p class="text-gray-700 leading-relaxed" data-lang-ar="بِسْمِ اللَّهِ، فَإِذَا نَسِيَ فِي أَوَّلِهِ فَلْيَقُلْ: بِسْمِ اللَّهِ فِي أَوَّلِهِ وَآخِرِهِ" data-lang-en="In the name of Allah. And if you forget at the beginning, then say: In the name of Allah at its beginning and at its end.">بِسْمِ اللَّهِ، فَإِذَا نَسِيَ فِي أَوَّلِهِ فَلْيَقُلْ: بِسْمِ اللَّهِ فِي أَوَّلِهِ وَآخِرِهِ</p>
+                                <p class="text-gray-500 mt-2" data-lang-ar="قبل الأكل" data-lang-en="Before eating">قبل الأكل</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="dhikr-card bg-white p-6 rounded-lg shadow-md">
+                        <div class="flex items-start">
+                            <div class="bg-red-100 text-red-800 rounded-full w-10 h-10 flex items-center justify-center mr-4">
+                                <i class="fas fa-car"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-xl font-bold text-red-800 mb-2" data-lang-ar="أذكار السفر" data-lang-en="Traveling Adhkar">أذكار السفر</h3>
+                                <p class="text-gray-700 leading-relaxed" data-lang-ar="سُبْحَانَ الَّذِي سَخَّرَ لَنَا هَذَا وَمَا كُنَّا لَهُ مُقْرِنِينَ وَإِنَّا إِلَى رَبِّنَا لَمُنْقَلِبُونَ" data-lang-en="Glory be to Him Who has subjected this to us, and we were not able to do it ourselves, and to our Lord we are returning.">سُبْحَانَ الَّذِي سَخَّرَ لَنَا هَذَا وَمَا كُنَّا لَهُ مُقْرِنِينَ وَإِنَّا إِلَى رَبِّنَا لَمُنْقَلِبُونَ</p>
+                                <p class="text-gray-500 mt-2" data-lang-ar="عند ركوب المركبة" data-lang-en="When boarding a vehicle">عند ركوب المركبة</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div id="hadith-page" class="page-transition hidden">
+                <div class="flex justify-between items-center mb-8">
+                    <button onclick="showPage('home-page')" class="bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-2 px-4 rounded-lg flex items-center">
+                        <i class="fas fa-arrow-right ml-2"></i> <span data-lang-ar="العودة" data-lang-en="Back">العودة</span>
+                    </button>
+                    <h2 class="text-2xl font-bold text-gray-700" data-lang-ar="أحاديث متنوعة" data-lang-en="Various Hadith">أحاديث متنوعة</h2>
+                    <div class="w-24"></div>
+                </div>
+                
+                <div class="space-y-6">
+                    <div class="hadith-card p-6">
+                        <div class="flex items-start mb-4">
+                            <div class="bg-blue-100 text-blue-800 rounded-full w-10 h-10 flex items-center justify-center mr-4">
+                                <i class="fas fa-quote-left"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-xl font-bold text-blue-800" data-lang-ar="عن أبي هريرة رضي الله عنه" data-lang-en="Narrated by Abu Hurairah (may Allah be pleased with him)">عن أبي هريرة رضي الله عنه</h3>
+                            </div>
+                        </div>
+                        <p class="text-gray-700 leading-relaxed mb-4" data-lang-ar="قال رسول الله صلى الله عليه وسلم: 'من كان يؤمن بالله واليوم الآخر فليقل خيراً أو ليصمت، ومن كان يؤمن بالله واليوم الآخر فليكرم جاره، ومن كان يؤمن بالله واليوم الآخر فليكرم ضيفه'" data-lang-en="The Messenger of Allah (peace be upon him) said: 'Whoever believes in Allah and the Last Day should speak what is good or keep silent; and whoever believes in Allah and the Last Day should show kindness to his neighbor; and whoever believes in Allah and the Last Day should show hospitality to his guest.'">قال رسول الله صلى الله عليه وسلم: "من كان يؤمن بالله واليوم الآخر فليقل خيراً أو ليصمت، ومن كان يؤمن بالله واليوم الآخر فليكرم جاره، ومن كان يؤمن بالله واليوم الآخر فليكرم ضيفه"</p>
+                        <p class="text-gray-500 text-sm" data-lang-ar="رواه البخاري ومسلم" data-lang-en="Narrated by Al-Bukhari and Muslim">رواه البخاري ومسلم</p>
+                    </div>
+                    
+                    <div class="hadith-card p-6">
+                        <div class="flex items-start mb-4">
+                            <div class="bg-green-100 text-green-800 rounded-full w-10 h-10 flex items-center justify-center mr-4">
+                                <i class="fas fa-quote-left"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-xl font-bold text-green-800" data-lang-ar="عن معاذ بن جبل رضي الله عنه" data-lang-en="Narrated by Mu'adh ibn Jabal (may Allah be pleased with him)">عن معاذ بن جبل رضي الله عنه</h3>
+                            </div>
+                        </div>
+                        <p class="text-gray-700 leading-relaxed mb-4" data-lang-ar="قال رسول الله صلى الله عليه وسلم: 'ألا أخبرك برأس الأمر كله وعموده وذروة سنامه؟' قلت: بلى يا رسول الله، قال: 'رأس الأمر الإسلام، وعموده الصلاة، وذروة سنامه الجهاد'" data-lang-en="The Messenger of Allah (peace be upon him) said: 'Shall I not tell you the head of the matter, its pillar, and the highest point of its hump?' I said: 'Yes, O Messenger of Allah.' He said: 'The head of the matter is Islam, its pillar is prayer, and the highest point of its hump is Jihad.'">قال رسول الله صلى الله عليه وسلم: "ألا أخبرك برأس الأمر كله وعموده وذروة سنامه؟" قلت: بلى يا رسول الله، قال: "رأس الأمر الإسلام، وعموده الصلاة، وذروة سنامه الجهاد"</p>
+                        <p class="text-gray-500 text-sm" data-lang-ar="رواه الترمذي" data-lang-en="Narrated by At-Tirmidhi">رواه الترمذي</p>
+                    </div>
+                    
+                    <div class="hadith-card p-6">
+                        <div class="flex items-start mb-4">
+                            <div class="bg-purple-100 text-purple-800 rounded-full w-10 h-10 flex items-center justify-center mr-4">
+                                <i class="fas fa-quote-left"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-xl font-bold text-purple-800" data-lang-ar="عن أبي هريرة رضي الله عنه" data-lang-en="Narrated by Abu Hurairah (may Allah be pleased with him)">عن أبي هريرة رضي الله عنه</h3>
+                            </div>
+                        </div>
+                        <p class="text-gray-700 leading-relaxed mb-4" data-lang-ar="قال رسول الله صلى الله عليه وسلم: 'لا تحاسدوا، ولا تناجشوا، ولا تباغضوا، ولا تدابروا، ولا يبع بعضكم على بيع بعض، وكونوا عباد الله إخواناً، المسلم أخو المسلم، لا يظلمه ولا يخذله ولا يحقره، التقوى هاهنا - ويشير إلى صدره ثلاث مرات - بحسب امرئ من الشر أن يحقر أخاه المسلم، كل المسلم على المسلم حرام: دمه وماله وعرضه'" data-lang-en="The Messenger of Allah (peace be upon him) said: 'Do not envy one another, do not bid against one another, do not hate one another, do not turn away from one another, and do not buy in competition with one another. Be, O slaves of Allah, brothers. The Muslim is the brother of a Muslim; he does not wrong him, he does not fail him, and he does not look down upon him. Piety is here' - pointing to his chest three times. 'It is enough evil for a person to look down upon his Muslim brother. The whole of a Muslim is inviolable for another Muslim: his blood, his property, and his honor.'">قال رسول الله صلى الله عليه وسلم: "لا تحاسدوا، ولا تناجشوا، ولا تباغضوا، ولا تدابروا، ولا يبع بعضكم على بيع بعض، وكونوا عباد الله إخواناً، المسلم أخو المسلم، لا يظلمه ولا يخذله ولا يحقره، التقوى هاهنا - ويشير إلى صدره ثلاث مرات - بحسب امرئ من الشر أن يحقر أخاه المسلم، كل المسلم على المسلم حرام: دمه وماله وعرضه"</p>
+                        <p class="text-gray-500 text-sm" data-lang-ar="رواه مسلم" data-lang-en="Narrated by Muslim">رواه مسلم</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div id="islam-pillars-page" class="page-transition hidden">
+                <div class="flex justify-between items-center mb-8">
+                    <button onclick="showPage('home-page')" class="bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-2 px-4 rounded-lg flex items-center">
+                        <i class="fas fa-arrow-right ml-2"></i> <span data-lang-ar="العودة" data-lang-en="Back">العودة</span>
+                    </button>
+                    <h2 class="text-2xl font-bold text-gray-700" data-lang-ar="أركان الإسلام" data-lang-en="Pillars of Islam">أركان الإسلام</h2>
+                    <div class="w-24"></div>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="pillar-card">
+                        <div class="bg-gradient-to-r from-blue-500 to-blue-700 p-6 text-white">
+                            <h3 class="text-xl font-bold" data-lang-ar="الشهادة" data-lang-en="The Testimony of Faith">الشهادة</h3>
+                        </div>
+                        <div class="bg-white p-6">
+                            <p class="text-gray-700 leading-relaxed" data-lang-ar="أن يشهد الإنسان أن لا إله إلا الله وأن محمداً رسول الله، وهي المفتاح لدخول الإسلام. معناها الاعتراف بالله وحده لا شريك له وبالنبوة لمحمد صلى الله عليه وسلم." data-lang-en="For a person to bear witness that there is no god but Allah and that Muhammad is the Messenger of Allah, which is the key to entering Islam. Its meaning is the acknowledgment of Allah alone, without any partner, and the prophethood of Muhammad (peace be upon him).">أن يشهد الإنسان أن لا إله إلا الله وأن محمداً رسول الله، وهي المفتاح لدخول الإسلام. معناها الاعتراف بالله وحده لا شريك له وبالنبوة لمحمد صلى الله عليه وسلم.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="pillar-card">
+                        <div class="bg-gradient-to-r from-green-500 to-green-700 p-6 text-white">
+                            <h3 class="text-xl font-bold" data-lang-ar="الصلاة" data-lang-en="Prayer">الصلاة</h3>
+                        </div>
+                        <div class="bg-white p-6">
+                            <p class="text-gray-700 leading-relaxed" data-lang-ar="هي عمود الدين، وهي الصلة بين العبد وربه، تؤدى خمس مرات في اليوم والليلة في أوقات محددة. وهي أول ما يحاسب عليه العبد يوم القيامة." data-lang-en="It is the pillar of the religion and the connection between the servant and his Lord. It is performed five times a day and night at specific times. It is the first thing a servant will be held accountable for on the Day of Resurrection.">هي عمود الدين، وهي الصلة بين العبد وربه، تؤدى خمس مرات في اليوم والليلة في أوقات محددة. وهي أول ما يحاسب عليه العبد يوم القيامة.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="pillar-card">
+                        <div class="bg-gradient-to-r from-yellow-500 to-yellow-700 p-6 text-white">
+                            <h3 class="text-xl font-bold" data-lang-ar="الزكاة" data-lang-en="Zakat (Charity)">الزكاة</h3>
+                        </div>
+                        <div class="bg-white p-6">
+                            <p class="text-gray-700 leading-relaxed" data-lang-ar="حق واجب في المال، تخرج من أموال الأغنياء إلى الفقراء والمحتاجين، وهي تطهير للمال ونماء له، وعلامة على التكافل الاجتماعي في الإسلام." data-lang-en="An obligatory right upon wealth, taken from the money of the rich to the poor and needy. It is a purification for wealth and a means of its growth, and a sign of social solidarity in Islam.">حق واجب في المال، تخرج من أموال الأغنياء إلى الفقراء والمحتاجين، وهي تطهير للمال ونماء له، وعلامة على التكافل الاجتماعي في الإسلام.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="pillar-card">
+                        <div class="bg-gradient-to-r from-red-500 to-red-700 p-6 text-white">
+                            <h3 class="text-xl font-bold" data-lang-ar="الصوم" data-lang-en="Fasting">الصوم</h3>
+                        </div>
+                        <div class="bg-white p-6">
+                            <p class="text-gray-700 leading-relaxed" data-lang-ar="الإمساك عن المفطرات من طلوع الفجر إلى غروب الشمس في شهر رمضان، وهو مدرسة للتقوى والتحكم في الشهوات، وفيه فوائد صحية واجتماعية." data-lang-en="Abstaining from things that break the fast from dawn until sunset during the month of Ramadan. It is a school for piety and self-control, and it has health and social benefits.">الإمساك عن المفطرات من طلوع الفجر إلى غروب الشمس في شهر رمضان، وهو مدرسة للتقوى والتحكم في الشهوات، وفيه فوائد صحية واجتماعية.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="pillar-card">
+                        <div class="bg-gradient-to-r from-purple-500 to-purple-700 p-6 text-white">
+                            <h3 class="text-xl font-bold" data-lang-ar="الحج" data-lang-en="Hajj (Pilgrimage)">الحج</h3>
+                        </div>
+                        <div class="bg-white p-6">
+                            <p class="text-gray-700 leading-relaxed" data-lang-ar="الذهاب إلى بيت الله الحرام في مكة لأداء مناسك الحج مرة في العمر لمن استطاع إليه سبيلاً، وهو مؤتمر عالمي للمسلمين يذكر بيوم القيامة." data-lang-en="Going to the Sacred House of Allah in Mecca to perform the rituals of Hajj once in a lifetime for those who are able to do so. It is a global conference for Muslims that reminds them of the Day of Resurrection.">الذهاب إلى بيت الله الحرام في مكة لأداء مناسك الحج مرة في العمر لمن استطاع إليه سبيلاً، وهو مؤتمر عالمي للمسلمين يذكر بيوم القيامة.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div id="iman-pillars-page" class="page-transition hidden">
+                <div class="flex justify-between items-center mb-8">
+                    <button onclick="showPage('home-page')" class="bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-2 px-4 rounded-lg flex items-center">
+                        <i class="fas fa-arrow-right ml-2"></i> <span data-lang-ar="العودة" data-lang-en="Back">العودة</span>
+                    </button>
+                    <h2 class="text-2xl font-bold text-gray-700" data-lang-ar="أركان الإيمان" data-lang-en="Pillars of Iman">أركان الإيمان</h2>
+                    <div class="w-24"></div>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="pillar-card">
+                        <div class="bg-gradient-to-r from-blue-400 to-blue-600 p-6 text-white">
+                            <h3 class="text-xl font-bold" data-lang-ar="الإيمان بالله" data-lang-en="Belief in Allah">الإيمان بالله</h3>
+                        </div>
+                        <div class="bg-white p-6">
+                            <p class="text-gray-700 leading-relaxed" data-lang-ar="التصديق الجازم بوجود الله تعالى وربوبيته وألوهيته وأسمائه وصفاته، وأنه المستحق للعبادة وحده لا شريك له، والعمل بمقتضى هذا الاعتقاد." data-lang-en="Firm belief in the existence of Allah, His Lordship, His Godhead, and His Names and Attributes, and that He alone deserves to be worshiped without any partner, and acting upon this belief.">التصديق الجازم بوجود الله تعالى وربوبيته وألوهيته وأسمائه وصفاته، وأنه المستحق للعبادة وحده لا شريك له، والعمل بمقتضى هذا الاعتقاد.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="pillar-card">
+                        <div class="bg-gradient-to-r from-green-400 to-green-600 p-6 text-white">
+                            <h3 class="text-xl font-bold" data-lang-ar="الإيمان بالملائكة" data-lang-en="Belief in Angels">الإيمان بالملائكة</h3>
+                        </div>
+                        <div class="bg-white p-6">
+                            <p class="text-gray-700 leading-relaxed" data-lang-ar="التصديق بوجود الملائكة وأنهم خلق من نور، عباد مكرمون لا يعصون الله ما أمرهم ويفعلون ما يؤمرون، ولهم أعمال ومهام كلفهم الله بها." data-lang-en="Belief in the existence of angels, that they are created from light, honored servants who do not disobey Allah in what He commands them and do what they are commanded, and they have tasks and duties assigned to them by Allah.">التصديق بوجود الملائكة وأنهم خلق من نور، عباد مكرمون لا يعصون الله ما أمرهم ويفعلون ما يؤمرون، ولهم أعمال ومهام كلفهم الله بها.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="pillar-card">
+                        <div class="bg-gradient-to-r from-purple-400 to-purple-600 p-6 text-white">
+                            <h3 class="text-xl font-bold" data-lang-ar="الإيمان بالكتب" data-lang-en="Belief in the Books">الإيمان بالكتب</h3>
+                        </div>
+                        <div class="bg-white p-6">
+                            <p class="text-gray-700 leading-relaxed" data-lang-ar="التصديق بأن الله أنزل كتباً على رسله هداية للبشر، منها التوراة والإنجيل والزبور والصحف، وخاتمها القرآن الكريم المحفوظ من التحريف." data-lang-en="Belief that Allah sent down books to His messengers as guidance for humanity, including the Torah, the Gospel, the Psalms, and the Scrolls, and the last of them is the Holy Qur'an, which is protected from distortion.">التصديق بأن الله أنزل كتباً على رسله هداية للبشر، منها التوراة والإنجيل والزبور والصحف، وخاتمها القرآن الكريم المحفوظ من التحريف.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="pillar-card">
+                        <div class="bg-gradient-to-r from-red-400 to-red-600 p-6 text-white">
+                            <h3 class="text-xl font-bold" data-lang-ar="الإيمان بالرسل" data-lang-en="Belief in the Messengers">الإيمان بالرسل</h3>
+                        </div>
+                        <div class="bg-white p-6">
+                            <p class="text-gray-700 leading-relaxed" data-lang-ar="التصديق بجميع الرسل الذين أرسلهم الله إلى البشر، أولهم نوح وآخرهم محمد صلى الله عليه وسلم، وأنهم بلغوا الرسالة وأدوا الأمانة." data-lang-en="Belief in all the messengers that Allah sent to humanity, the first of them being Noah and the last of them being Muhammad (peace be upon him), and that they delivered the message and fulfilled the trust.">التصديق بجميع الرسل الذين أرسلهم الله إلى البشر، أولهم نوح وآخرهم محمد صلى الله عليه وسلم، وأنهم بلغوا الرسالة وأدوا الأمانة.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="pillar-card">
+                        <div class="bg-gradient-to-r from-yellow-400 to-yellow-600 p-6 text-white">
+                            <h3 class="text-xl font-bold" data-lang-ar="الإيمان باليوم الآخر" data-lang-en="Belief in the Last Day">الإيمان باليوم الآخر</h3>
+                        </div>
+                        <div class="bg-white p-6">
+                            <p class="text-gray-700 leading-relaxed" data-lang-ar="التصديق بيوم القيامة وما فيه من البعث والحساب والميزان والصراط والجنة والنار، وأن كل إنسان مجزي بعمله في هذه الحياة." data-lang-en="Belief in the Day of Resurrection and what is in it of the resurrection, accountability, the scale, the bridge, Paradise, and Hellfire, and that every person will be rewarded for their deeds in this life.">التصديق بيوم القيامة وما فيه من البعث والحساب والميزان والصراط والجنة والنار، وأن كل إنسان مجزي بعمله في هذه الحياة.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="pillar-card">
+                        <div class="bg-gradient-to-r from-indigo-400 to-indigo-600 p-6 text-white">
+                            <h3 class="text-xl font-bold" data-lang-ar="الإيمان بالقدر" data-lang-en="Belief in Divine Decree">الإيمان بالقدر</h3>
+                        </div>
+                        <div class="bg-white p-6">
+                            <p class="text-gray-700 leading-relaxed" data-lang-ar="التصديق بأن كل شيء في الكون بقضاء الله وقدره، مع الإيمان بأن للإنسان اختياراً ومسؤولية عن أفعاله التي يكسبها بمشيئته." data-lang-en="Belief that everything in the universe is by the decree and pre-destination of Allah, along with the belief that a person has a choice and is responsible for their actions that they earn by their will.">التصديق بأن كل شيء في الكون بقضاء الله وقدره، مع الإيمان بأن للإنسان اختياراً ومسؤولية عن أفعاله التي يكسبها بمشيئته.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="zakat-page" class="page-transition hidden">
+                <div class="flex justify-between items-center mb-8">
+                    <button onclick="showPage('home-page')" class="bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-2 px-4 rounded-lg flex items-center">
+                        <i class="fas fa-arrow-right ml-2"></i> <span data-lang-ar="العودة" data-lang-en="Back">العودة</span>
+                    </button>
+                    <h2 class="text-2xl font-bold text-gray-700" data-lang-ar="احسب زكاتك" data-lang-en="Calculate Zakat">احسب زكاتك</h2>
+                    <div class="w-24"></div>
+                </div>
+
+                <div class="bg-white p-6 rounded-lg shadow-md text-center">
+                    <h3 class="text-xl font-bold text-gray-800 mb-4" data-lang-ar="حاسبة الزكاة الشهرية" data-lang-en="Monthly Zakat Calculator">حاسبة الزكاة الشهرية</h3>
+                    <p class="text-gray-600 mb-6" data-lang-ar="احسب مقدار زكاتك الشهرية بسهولة ويسر. تذكّر أن الزكاة واجبة على المال الذي يبلغ النصاب ويحول عليه الحول." data-lang-en="Calculate your monthly zakat easily and simply. Remember that Zakat is obligatory on wealth that reaches the nisab and for which a full lunar year has passed.">احسب مقدار زكاتك الشهرية بسهولة ويسر. تذكّر أن الزكاة واجبة على المال الذي يبلغ النصاب ويحول عليه الحول.</p>
+                    <div class="flex flex-col items-center">
+                        <input type="number" id="monthly-salary" class="w-full md:w-1/2 p-3 mb-4 rounded-lg border-2 border-gray-300 focus:outline-none focus:border-blue-500 text-center" placeholder="أدخل راتبك الشهري">
+                        <button onclick="calculateMonthlyZakat()" class="bg-gradient-to-r from-teal-500 to-green-500 text-white font-bold py-3 px-8 rounded-full btn-hover-effect">
+                            <span data-lang-ar="احسب الزكاة" data-lang-en="Calculate Zakat">احسب الزكاة</span>
+                        </button>
+                    </div>
+                    <div class="mt-6">
+                        <p class="text-2xl font-bold text-green-700" id="zakat-result"></p>
+                    </div>
+                    <p class="text-sm text-gray-500 mt-2" data-lang-ar="ملاحظة: زكاة الراتب 2.5% بعد بلوغ النصاب." data-lang-en="Note: Zakat on salary is 2.5% after reaching the nisab.">ملاحظة: زكاة الراتب 2.5% بعد بلوغ النصاب.</p>
+                </div>
+            </div>
+            
+            <div id="prayer-times-page" class="page-transition hidden">
+                <div class="flex justify-between items-center mb-8">
+                    <button onclick="showPage('home-page')" class="bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-2 px-4 rounded-lg flex items-center">
+                        <i class="fas fa-arrow-right ml-2"></i> <span data-lang-ar="العودة" data-lang-en="Back">العودة</span>
+                    </button>
+                    <h2 class="text-2xl font-bold text-gray-700" data-lang-ar="مواقيت الصلاة" data-lang-en="Prayer Times">مواقيت الصلاة</h2>
+                    <div class="w-24"></div>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow-md">
+                    <p id="prayer-times-status" class="text-center text-gray-700 mb-4" data-lang-ar="جاري حساب مواقيت الصلاة..." data-lang-en="Calculating prayer times...">جاري حساب مواقيت الصلاة...</p>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4" id="prayer-times-grid">
+                        <div class="bg-blue-50 p-4 rounded-lg text-center">
+                            <p class="text-lg font-bold" data-lang-ar="الفجر" data-lang-en="Fajr">الفجر</p>
+                            <p class="text-2xl font-bold text-blue-800" id="fajr-time">--:--</p>
+                        </div>
+                        <div class="bg-green-50 p-4 rounded-lg text-center">
+                            <p class="text-lg font-bold" data-lang-ar="الظهر" data-lang-en="Dhuhr">الظهر</p>
+                            <p class="text-2xl font-bold text-green-800" id="dhuhr-time">--:--</p>
+                        </div>
+                        <div class="bg-yellow-50 p-4 rounded-lg text-center">
+                            <p class="text-lg font-bold" data-lang-ar="العصر" data-lang-en="Asr">العصر</p>
+                            <p class="text-2xl font-bold text-yellow-800" id="asr-time">--:--</p>
+                        </div>
+                        <div class="bg-orange-50 p-4 rounded-lg text-center">
+                            <p class="text-lg font-bold" data-lang-ar="المغرب" data-lang-en="Maghrib">المغرب</p>
+                            <p class="text-2xl font-bold text-orange-800" id="maghrib-time">--:--</p>
+                        </div>
+                        <div class="bg-purple-50 p-4 rounded-lg text-center">
+                            <p class="text-lg font-bold" data-lang-ar="العشاء" data-lang-en="Isha">العشاء</p>
+                            <p class="text-2xl font-bold text-purple-800" id="isha-time">--:--</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div id="about-us-page" class="page-transition hidden">
+                <div class="flex justify-between items-center mb-8">
+                    <button onclick="showPage('home-page')" class="bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-2 px-4 rounded-lg flex items-center">
+                        <i class="fas fa-arrow-right ml-2"></i> <span data-lang-ar="العودة" data-lang-en="Back">العودة</span>
+                    </button>
+                    <h2 class="text-2xl font-bold text-gray-700" data-lang-ar="من نحن" data-lang-en="About Us">من نحن</h2>
+                    <div class="w-24"></div>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow-md">
+                    <div class="flex flex-col items-center text-center">
+                        <div class="bg-gradient-primary text-white p-6 rounded-lg shadow-lg">
+                            <p class="text-xl font-bold" data-lang-ar="أنا مطور عمري 13 عشر سنة. أردتُ أن أصنع تطبيق يفيد الإسلام والمسلمين. لعلة في ميزان حسناتي وأياكم أجمعين إن شاءالله." data-lang-en="I am a 13-year-old developer. I wanted to create an application that benefits Islam and Muslims. May it be in the balance of my good deeds and yours, God willing.">أنا مطور عمري 13 عشر سنة. أردتُ أن أصنع تطبيق يفيد الإسلام والمسلمين. لعلة في ميزان حسناتي وأياكم أجمعين إن شاءالله.</p>
+                            <p class="text-lg mt-4" data-lang-ar="المطور: كريم محمد محمد حسن قورة" data-lang-en="Developer: Karim Mohamed Mohamed Hassan Kora">المطور: **كريم محمد محمد حسن قورة**</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="privacy-page" class="page-transition hidden">
+                <div class="flex justify-between items-center mb-8">
+                    <button onclick="showPage('home-page')" class="bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-2 px-4 rounded-lg flex items-center">
+                        <i class="fas fa-arrow-right ml-2"></i> <span data-lang-ar="العودة" data-lang-en="Back">العودة</span>
+                    </button>
+                    <h2 class="text-2xl font-bold text-gray-700" data-lang-ar="سياسة الخصوصية" data-lang-en="Privacy Policy">سياسة الخصوصية</h2>
+                    <div class="w-24"></div>
+                </div>
+                
+                <div class="bg-white p-6 rounded-lg shadow-md">
+                    <h3 class="text-xl font-bold text-gray-800 mb-4" data-lang-ar="مقدمة" data-lang-en="Introduction">مقدمة</h3>
+                    <p class="text-gray-700 leading-relaxed mb-6" data-lang-ar="نحن في تطبيق المسلم نقدّر خصوصيتك ونلتزم بحماية بياناتك الشخصية. توضح سياسة الخصوصية هذه كيفية جمعنا واستخدامنا وحماية معلوماتك." data-lang-en="At Muslim App, we value your privacy and are committed to protecting your personal data. This privacy policy explains how we collect, use, and protect your information.">نحن في تطبيق المسلم نقدّر خصوصيتك ونلتزم بحماية بياناتك الشخصية. توضح سياسة الخصوصية هذه كيفية جمعنا واستخدامنا وحماية معلوماتك.</p>
+                    
+                    <h3 class="text-xl font-bold text-gray-800 mb-4" data-lang-ar="المعلومات التي نجمعها" data-lang-en="Information We Collect">المعلومات التي نجمعها</h3>
+                    <p class="text-gray-700 leading-relaxed mb-6" data-lang-ar="لا نجمع أي بيانات شخصية من المستخدمين. بعض البيانات مثل عدد التسبيحات والاستخدامات الأخرى للتطبيق يتم حفظها محلياً على جهازك فقط ولا يتم مشاركتها مع أي طرف ثالث." data-lang-en="We do not collect any personal data from users. Some data, such as the number of Tasbeehs and other uses of the app, is saved locally on your device only and is not shared with any third party.">لا نجمع أي بيانات شخصية من المستخدمين. بعض البيانات مثل عدد التسبيحات والاستخدامات الأخرى للتطبيق يتم حفظها محلياً على جهازك فقط ولا يتم مشاركتها مع أي طرف ثالث.</p>
+                    
+                    <h3 class="text-xl font-bold text-gray-800 mb-4" data-lang-ar="كيف نستخدم المعلومات" data-lang-en="How We Use the Information">كيف نستخدم المعلومات</h3>
+                    <p class="text-gray-700 leading-relaxed mb-6" data-lang-ar="البيانات المحفوظة محلياً تستخدم فقط لتحسين تجربة المستخدم وتقديم إحصائيات شخصية لك عن استخدامك للتطبيق. لا يتم إرسال هذه البيانات إلى أي خوادم خارجية." data-lang-en="The locally saved data is used only to improve the user experience and provide you with personal statistics about your use of the app. This data is not sent to any external servers.">البيانات المحفوظة محلياً تستخدم فقط لتحسين تجربة المستخدم وتقديم إحصائيات شخصية لك عن استخدامك للتطبيق. لا يتم إرسال هذه البيانات إلى أي خوادم خارجية.</p>
+                    
+                    <h3 class="text-xl font-bold text-gray-800 mb-4" data-lang-ar="حماية المعلومات" data-lang-en="Information Protection">حماية المعلومات</h3>
+                    <p class="text-gray-700 leading-relaxed mb-6" data-lang-ar="نحن نستخدم تقنيات التخزين المحلي الآمن لحماية بياناتك على جهازك. ومع ذلك، لا يمكن ضمان أمان كامل لأي طريقة نقل عبر الإنترنت أو تخزين إلكتروني." data-lang-en="We use secure local storage technologies to protect your data on your device. However, complete security cannot be guaranteed for any method of transmission over the internet or electronic storage.">نحن نستخدم تقنيات التخزين المحلي الآمن لحماية بياناتك على جهازك. ومع ذلك، لا يمكن ضمان أمان كامل لأي طريقة نقل عبر الإنترنت أو تخزين إلكتروني.</p>
+                    
+                    <h3 class="text-xl font-bold text-gray-800 mb-4" data-lang-ar="التغييرات على سياسة الخصوصية" data-lang-en="Changes to the Privacy Policy">التغييرات على سياسة الخصوصية</h3>
+                    <p class="text-gray-700 leading-relaxed" data-lang-ar="قد نقوم بتحديث هذه السياسة من وقت لآخر. ننصحك بمراجعتها بشكل دوري لأي تغييرات. استمرارك في استخدام التطبيق بعد أي تغيير يعني موافقتك على هذه التغييرات." data-lang-en="We may update this policy from time to time. We advise you to review it periodically for any changes. Your continued use of the app after any changes means your acceptance of these changes.">قد نقوم بتحديث هذه السياسة من وقت لآخر. ننصحك بمراجعتها بشكل دوري لأي تغييرات. استمرارك في استخدام التطبيق بعد أي تغيير يعني موافقتك على هذه التغييرات.</p>
+                </div>
+            </div>
+        </main>
+        
+        <footer class="bg-gray-800 text-white py-6">
+            <div class="container mx-auto px-4 text-center">
+                <p id="footer-text" data-lang-ar="تطبيق المسلم | الذكر والأذكار - 2025" data-lang-en="Muslim App | Dhikr & Adhkar - 2025">تطبيق المسلم | الذكر والأذكار - 2025</p>
+            </div>
+        </footer>
+    </div>
+    
+    <script src="https://aladhan.com/scripts/prayer_times.js"></script>
+
+    <script>
+        // Disable copy, paste, and long press
+        document.addEventListener('DOMContentLoaded', () => {
+            document.body.addEventListener('contextmenu', (e) => e.preventDefault());
+            document.body.addEventListener('copy', (e) => e.preventDefault());
+            document.body.addEventListener('cut', (e) => e.preventDefault());
+            document.body.addEventListener('selectstart', (e) => e.preventDefault());
+            document.body.addEventListener('dragstart', (e) => e.preventDefault());
+        });
+
+        // Global variables must be declared outside the event listener to be accessible everywhere
+        let counter = 0;
+        let currentDhikr = { ar: 'سبحان الله', en: 'Subhan Allah' };
+        let currentLanguage = 'ar';
+        let qiblaAngle = null;
+        const kaabaLat = 21.4225;
+        const kaabaLon = 39.8262;
+        
+        const qiblaStatusMessage = document.getElementById('qibla-status-message');
+        const qiblaInfoMessage = document.getElementById('qibla-info-message');
+        const qiblaArrow = document.getElementById('qibla-arrow');
+        const qiblaCompass = document.getElementById('qibla-compass');
+
+        // All functions that are called from the HTML (onclick)
+        // are placed in the global scope to be immediately available.
+        function showPage(pageId) {
+            document.querySelectorAll('[id$="-page"]').forEach(page => {
+                page.classList.add('hidden');
+            });
+            document.getElementById(pageId).classList.remove('hidden');
+            window.scrollTo(0, 0);
+
+            // Special handling for pages that need dynamic content
+            if (pageId === 'qibla-page') {
+                initQibla();
+            } else if (pageId === 'prayer-times-page') {
+                getPrayerTimes();
+            }
+        }
+        
+        function toggleDarkMode() {
+            const body = document.body;
+            const icon = document.getElementById('mode-icon');
+            body.classList.toggle('dark-mode');
+            if (body.classList.contains('dark-mode')) {
+                localStorage.setItem('theme', 'dark');
+                icon.classList.remove('fa-moon');
+                icon.classList.add('fa-sun');
+            } else {
+                localStorage.setItem('theme', 'light');
+                icon.classList.remove('fa-sun');
+                icon.classList.add('fa-moon');
+            }
+        }
+        
+        function toggleLanguage() {
+            currentLanguage = (currentLanguage === 'ar') ? 'en' : 'ar';
+            document.documentElement.lang = currentLanguage;
+            document.documentElement.dir = (currentLanguage === 'ar') ? 'rtl' : 'ltr';
+            
+            document.querySelectorAll('[data-lang-ar]').forEach(element => {
+                const arabicText = element.getAttribute('data-lang-ar');
+                const englishText = element.getAttribute('data-lang-en');
+                element.textContent = currentLanguage === 'ar' ? arabicText : englishText;
+            });
+
+            const currentDhikrElement = document.getElementById('current-dhikr');
+            if (currentDhikrElement) {
+                currentDhikrElement.textContent = currentLanguage === 'ar' ? currentDhikr.ar : currentDhikr.en;
+            }
+        }
+        
+        function incrementCounter() {
+            counter++;
+            updateCounterDisplay();
+            
+            const circle = document.querySelector('.tasbeeh-circle');
+            circle.classList.add('animate-pulse');
+            setTimeout(() => {
+                circle.classList.remove('animate-pulse');
+            }, 300);
+        }
+        
+        function resetCounter() {
+            counter = 0;
+            updateCounterDisplay();
+        }
+        
+        function changeDhikr(newDhikrAr, newDhikrEn) {
+            currentDhikr.ar = newDhikrAr;
+            currentDhikr.en = newDhikrEn;
+            const circleText = document.querySelector('.tasbeeh-circle span');
+            circleText.textContent = currentLanguage === 'ar' ? newDhikrAr : newDhikrEn;
+            
+            const circle = document.querySelector('.tasbeeh-circle');
+            circle.className = 'tasbeeh-circle rounded-full flex items-center justify-center shadow-xl mb-8 cursor-pointer';
+            
+            if (newDhikrAr === 'سبحان الله') {
+                circle.classList.add('bg-gradient-primary');
+            } else if (newDhikrAr === 'الحمد لله') {
+                circle.classList.add('bg-gradient-to-r', 'from-green-500', 'to-teal-500');
+            } else if (newDhikrAr === 'الله أكبر') {
+                circle.classList.add('bg-gradient-to-r', 'from-red-500', 'to-pink-500');
+            } else {
+                circle.classList.add('bg-gradient-to-r', 'from-purple-500', 'to-indigo-500');
+            }
+        }
+        
+        function switchAdhkarTab(time) {
+            const morningTab = document.getElementById('morning-tab');
+            const eveningTab = document.getElementById('evening-tab');
+            const morningAdhkar = document.getElementById('morning-adhkar');
+            const eveningAdhkar = document.getElementById('evening-adhkar');
+
+            morningTab.classList.remove('tab-active');
+            eveningTab.classList.remove('tab-active');
+            morningAdhkar.classList.add('hidden');
+            eveningAdhkar.classList.add('hidden');
+            
+            if (time === 'morning') {
+                morningTab.classList.add('tab-active');
+                morningAdhkar.classList.remove('hidden');
+            } else {
+                eveningTab.classList.add('tab-active');
+                eveningAdhkar.classList.remove('hidden');
+            }
+        }
+        
+        function calculateMonthlyZakat() {
+            const salaryInput = document.getElementById('monthly-salary');
+            const resultElement = document.getElementById('zakat-result');
+            const salary = parseFloat(salaryInput.value);
+            const nisab = 20000;
+            
+            if (isNaN(salary) || salary <= 0) {
+                resultElement.textContent = 'الرجاء إدخال رقم صحيح.';
+                resultElement.classList.remove('text-green-700');
+                resultElement.classList.add('text-red-500');
+                return;
+            }
+
+            if (salary >= nisab) {
+                const zakat = (salary * 0.025).toFixed(2);
+                resultElement.textContent = `مقدار الزكاة الشهرية: ${zakat}`;
+                resultElement.classList.remove('text-red-500');
+                resultElement.classList.add('text-green-700');
+            } else {
+                resultElement.textContent = 'الراتب لا يبلغ النصاب، لا تجب عليه الزكاة.';
+                resultElement.classList.remove('text-green-700');
+                resultElement.classList.add('text-red-500');
+            }
+        }
+
+        // Qibla Logic
+        function initQibla() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(position => {
+                    const userLat = position.coords.latitude;
+                    const userLon = position.coords.longitude;
+                    qiblaAngle = calculateQibla(userLat, userLon);
+                    qiblaStatusMessage.textContent = 'تم تحديد موقعك بنجاح.';
+                    
+                    if (window.DeviceOrientationEvent) {
+                        window.addEventListener('deviceorientation', (event) => {
+                            if (event.webkitCompassHeading !== undefined) {
+                                // iOS
+                                const heading = event.webkitCompassHeading;
+                                const qiblaRotation = qiblaAngle - heading;
+                                qiblaArrow.style.transform = `rotate(${qiblaRotation}deg)`;
+
+                                if (Math.abs(qiblaRotation) < 5 || Math.abs(qiblaRotation) > 355) {
+                                    qiblaInfoMessage.textContent = 'أنت تواجه القبلة! ✅';
+                                } else {
+                                    qiblaInfoMessage.textContent = 'قم بتحريك هاتفك حتى يشير المؤشر الأزرق إلى المؤشر الأحمر';
+                                }
+                            } else if (event.alpha !== null) {
+                                // Android
+                                const heading = 360 - event.alpha;
+                                const qiblaRotation = qiblaAngle - heading;
+                                qiblaArrow.style.transform = `rotate(${qiblaRotation}deg)`;
+
+                                if (Math.abs(qiblaRotation) < 5 || Math.abs(qiblaRotation) > 355) {
+                                    qiblaInfoMessage.textContent = 'أنت تواجه القبلة! ✅';
+                                } else {
+                                    qiblaInfoMessage.textContent = 'قم بتحريك هاتفك حتى يشير المؤشر الأزرق إلى المؤشر الأحمر';
+                                }
+                            }
+                        });
+                    } else {
+                        qiblaInfoMessage.textContent = 'مستشعر البوصلة غير مدعوم في جهازك.';
+                    }
+                }, () => {
+                    qiblaStatusMessage.textContent = 'تعذر الحصول على موقعك. يرجى تفعيل الموقع.';
+                });
+            } else {
+                qiblaStatusMessage.textContent = 'هذا المتصفح لا يدعم تحديد الموقع.';
+            }
+        }
+
+        function calculateQibla(lat, lon) {
+            const latRad = lat * Math.PI / 180;
+            const lonRad = lon * Math.PI / 180;
+            const kaabaLatRad = kaabaLat * Math.PI / 180;
+            const kaabaLonRad = kaabaLon * Math.PI / 180;
+
+            const dLon = kaabaLonRad - lonRad;
+            const y = Math.sin(dLon) * Math.cos(kaabaLatRad);
+            const x = Math.cos(latRad) * Math.sin(kaabaLatRad) - Math.sin(latRad) * Math.cos(kaabaLatRad) * Math.cos(dLon);
+
+            let angle = Math.atan2(y, x) * 180 / Math.PI;
+            if (angle < 0) angle += 360;
+            return angle;
+        }
+
+        // Prayer Times Logic
+        function getPrayerTimes() {
+            const statusElement = document.getElementById('prayer-times-status');
+            statusElement.textContent = 'جاري حساب مواقيت الصلاة...';
+
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(position => {
+                    const lat = position.coords.latitude;
+                    const lon = position.coords.longitude;
+                    const date = new Date();
+                    
+                    const times = prayTimes.getTimes(date, [lat, lon], 'auto', 'auto', 'ISNA');
+                    
+                    if (times) {
+                        document.getElementById('fajr-time').textContent = times.fajr;
+                        document.getElementById('dhuhr-time').textContent = times.dhuhr;
+                        document.getElementById('asr-time').textContent = times.asr;
+                        document.getElementById('maghrib-time').textContent = times.maghrib;
+                        document.getElementById('isha-time').textContent = times.isha;
+                        statusElement.textContent = 'تم تحديث الأوقات بناءً على موقعك.';
+                    } else {
+                        statusElement.textContent = 'تعذر حساب الأوقات. قد تكون البيانات غير كافية.';
+                    }
+
+                }, () => {
+                    statusElement.textContent = 'تعذر الحصول على موقعك. يرجى تفعيل الموقع.';
+                });
+            } else {
+                statusElement.textContent = 'هذا المتصفح لا يدعم تحديد الموقع.';
+            }
+        }
+
+        // Functions and setup that must wait for the DOM to be ready
+        document.addEventListener('DOMContentLoaded', function() {
+            // Load saved counter and theme
+            const savedCounter = localStorage.getItem('dhikrCounter');
+            if (savedCounter) {
+                counter = parseInt(savedCounter);
+                updateCounterDisplay();
+            }
+            
+            const savedTheme = localStorage.getItem('theme');
+            if (savedTheme === 'dark') {
+                toggleDarkMode();
+            }
+            
+            // Re-bind the Qibla initialization event to the page element
+            document.getElementById('qibla-page').addEventListener('transitionend', (e) => {
+                if (!e.target.classList.contains('hidden') && e.target.id === 'qibla-page') {
+                    initQibla();
+                }
+            });
+
+            // Re-bind the Prayer Times initialization event
+            document.getElementById('prayer-times-page').addEventListener('transitionend', (e) => {
+                if (!e.target.classList.contains('hidden') && e.target.id === 'prayer-times-page') {
+                    getPrayerTimes();
+                }
+            });
+        });
+
+        // Helper for the counter display
+        function updateCounterDisplay() {
+            document.getElementById('counter').textContent = counter;
+            localStorage.setItem('dhikrCounter', counter);
+        }
+    </script>
+</body>
+</html>
