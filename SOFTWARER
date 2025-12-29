@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SOFTWARER | مجتمع تقني متكامل</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* --- منع تحديد النصوص --- */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-user-select: none; /* Safari */
+            -ms-user-select: none; /* IE 10+ */
+            user-select: none; /* Standard */
+        }
+
+        :root {
+            --dark-blue: #1a252f;
+            --main-blue: #3498db;
+            --deep-blue: #2c3e50;
+            --light-grey: #ecf0f1;
+            --white: #ffffff;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--dark-blue);
+            color: var(--white);
+            line-height: 1.6;
+            overflow-x: hidden;
+            text-align: right;
+        }
+
+        /* --- الأشكال المتحركة في الخلفية --- */
+        .bg-elements {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -2;
+            overflow: hidden;
+            background: radial-gradient(circle at center, #1a252f 0%, #0a0e12 100%);
+        }
+
+        .floating-shape {
+            position: absolute;
+            background: rgba(52, 152, 219, 0.1);
+            border: 1px solid rgba(52, 152, 219, 0.2);
+            animation: float 20s infinite linear;
+            border-radius: 10%;
+        }
+
+        @keyframes float {
+            from { transform: translateY(100vh) rotate(0deg); opacity: 1; }
+            to { transform: translateY(-10vh) rotate(360deg); opacity: 0; }
+        }
+
+        /* --- تأثير الأمواج --- */
+        .waves-container {
+            position: relative;
+            width: 100%;
+            height: 15vh;
+            min-height: 100px;
+            max-height: 150px;
+            margin-top: -15vh;
+            z-index: 5;
+        }
+
+        .waves {
+            position: relative;
+            width: 100%;
+            height: 100%;
+        }
+
+        .parallax > use {
+            animation: move-forever 25s cubic-bezier(.55,.5,.45,.5) infinite;
+        }
+        .parallax > use:nth-child(1) { animation-delay: -2s; animation-duration: 7s; fill: rgba(52, 152, 219, 0.7); }
+        .parallax > use:nth-child(2) { animation-delay: -3s; animation-duration: 10s; fill: rgba(52, 152, 219, 0.5); }
+        .parallax > use:nth-child(3) { animation-delay: -4s; animation-duration: 13s; fill: rgba(52, 152, 219, 0.3); }
+        .parallax > use:nth-child(4) { animation-delay: -5s; animation-duration: 20s; fill: var(--light-grey); }
+
+        @keyframes move-forever {
+            0% { transform: translate3d(-90px,0,0); }
+            100% { transform: translate3d(85px,0,0); }
+        }
+
+        .container { max-width: 1200px; margin: auto; padding: 0 20px; }
+
+        header {
+            background: rgba(26, 37, 47, 0.9);
+            padding: 15px 0;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            backdrop-filter: blur(10px);
+        }
+
+        nav { display: flex; justify-content: center; align-items: center; }
+        .logo { font-size: 1.8rem; font-weight: bold; color: var(--main-blue); }
+
+        .hero {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            background: transparent;
+        }
+
+        .hero h1 { font-size: 3.5rem; margin-bottom: 20px; }
+        .hero p { font-size: 1.3rem; max-width: 800px; margin-bottom: 30px; color: var(--light-grey); }
+        
+        .hero-icon { font-size: 4rem; color: var(--main-blue); margin-bottom: 20px; animation: pulse 2s infinite; }
+        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.1); } 100% { transform: scale(1); } }
+
+        .btn-main {
+            padding: 15px 40px;
+            background: var(--main-blue);
+            color: white;
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: bold;
+            transition: 0.3s;
+        }
+        .btn-main:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(52, 152, 219, 0.3); }
+
+        section { padding: 100px 0; }
+        h2 { text-align: center; margin-bottom: 50px; font-size: 2.5rem; color: var(--main-blue); }
+
+        .about { background: var(--light-grey); color: var(--dark-blue); border-radius: 20px; padding: 60px 40px; }
+
+        .services-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; }
+        .card {
+            background: rgba(255,255,255,0.05);
+            padding: 40px;
+            border-radius: 15px;
+            text-align: center;
+            border: 1px solid rgba(52,152,219,0.1);
+            transition: 0.3s;
+        }
+        .card:hover { transform: translateY(-10px); border-color: var(--main-blue); background: rgba(52,152,219,0.05); }
+        .card i { font-size: 3rem; color: var(--main-blue); margin-bottom: 20px; }
+
+        .contact-box { background: var(--deep-blue); border-radius: 20px; padding: 50px; text-align: center; }
+        .social-links { display: flex; justify-content: center; gap: 30px; margin-top: 30px; }
+        .social-links a { color: var(--white); font-size: 2.5rem; transition: 0.3s; text-decoration: none; }
+        .social-links a:hover { color: var(--main-blue); transform: scale(1.2); }
+        .social-links span { display: block; font-size: 0.9rem; margin-top: 5px; }
+
+        footer { text-align: center; padding: 40px; background: #0a0e12; color: #777; border-top: 1px solid #1a252f; }
+    </style>
+</head>
+<body oncontextmenu="return false;"> <div class="bg-elements" id="bgShapes"></div>
+
+    <header>
+        <nav class="container">
+            <div class="logo">SOFTWARER</div>
+        </nav>
+    </header>
+
+    <section id="home" class="hero">
+        <div class="container">
+            <i class="fas fa-laptop-code hero-icon"></i>
+            <h1>SOFTWARER</h1>
+            <p>نحول رؤيتك التقنية إلى واقع ملموس. مجتمع تقني متكامل لبناء التطبيقات من الصفر.</p>
+            <a href="#contact" class="btn-main">ابدأ مشروعك الآن</a>
+        </div>
+    </section>
+
+    <section id="contact" class="container">
+        <div class="contact-box">
+            <h2>تواصل مع الفريق التقني</h2>
+            <div class="social-links">
+                <a href="https://wa.me/201558179388" target="_blank">
+                    <i class="fab fa-whatsapp"></i>
+                    <span>واتساب</span>
+                </a>
+                <a href="https://www.youtube.com/@karimpro-v4x" target="_blank">
+                    <i class="fab fa-youtube"></i>
+                    <span>YouTube</span>
+                </a>
+                <a href="mailto:km2071614@gmail.com">
+                    <i class="fas fa-envelope"></i>
+                    <span>إيميل</span>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <p>جميع الحقوق محفوظة لشركة SOFTWARER &copy; 2024 | مؤسس الشركة: كريم محمد محمد حسن قورة</p>
+    </footer>
+
+    <script>
+        // 1. منع النسخ والقص واللصق
+        document.addEventListener('copy', (e) => e.preventDefault());
+        document.addEventListener('cut', (e) => e.preventDefault());
+        document.addEventListener('paste', (e) => e.preventDefault());
+
+        // 2. منع اختصارات الكيبورد (Ctrl+C, Ctrl+V, Ctrl+U, F12)
+        document.onkeydown = function(e) {
+            if (e.ctrlKey && (e.keyCode === 67 || e.keyCode === 86 || e.keyCode === 85 || e.keyCode === 73)) {
+                return false;
+            }
+            if (e.keyCode === 123) { // F12
+                return false;
+            }
+        };
+
+        // 3. منع الضغط المطول على الهواتف (تعطيل القائمة)
+        window.oncontextmenu = function(event) {
+            event.preventDefault();
+            event.stopPropagation();
+            return false;
+        };
+
+        // توليد أشكال الخلفية
+        const bg = document.getElementById('bgShapes');
+        for (let i = 0; i < 15; i++) {
+            const shape = document.createElement('div');
+            shape.classList.add('floating-shape');
+            const size = Math.random() * 50 + 10 + 'px';
+            shape.style.width = size;
+            shape.style.height = size;
+            shape.style.left = Math.random() * 100 + 'vw';
+            shape.style.animationDuration = Math.random() * 10 + 10 + 's';
+            shape.style.animationDelay = Math.random() * 5 + 's';
+            bg.appendChild(shape);
+        }
+    </script>
+</body>
+</html>
